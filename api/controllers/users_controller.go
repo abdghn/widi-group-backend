@@ -8,11 +8,12 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/gorilla/mux"
 	"product-order-be/api/auth"
 	"product-order-be/api/models"
 	"product-order-be/api/responses"
 	"product-order-be/api/utils/formaterror"
+
+	"github.com/gorilla/mux"
 )
 
 func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -68,6 +69,26 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 	user := models.User{}
 	userGotten, err := user.FindUserByID(server.DB, uint32(uid))
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+	responses.JSON(w, http.StatusOK, userGotten)
+}
+func (server *Server) GetUserByEmail(w http.ResponseWriter, r *http.Request) {
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+	user := models.User{}
+	err = json.Unmarshal(body, &user)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+	userGotten, err := user.FindUserByEmail(server.DB, user.Email)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
