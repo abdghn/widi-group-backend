@@ -9,10 +9,15 @@ import (
 	"product-order-be/api/models"
 	"product-order-be/api/responses"
 	"product-order-be/api/utils/formaterror"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
 func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/form-data")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
