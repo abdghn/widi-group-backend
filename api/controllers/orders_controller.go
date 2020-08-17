@@ -8,11 +8,12 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/gorilla/mux"
 	"product-order-be/api/auth"
 	"product-order-be/api/models"
 	"product-order-be/api/responses"
 	"product-order-be/api/utils/formaterror"
+
+	"github.com/gorilla/mux"
 )
 
 func (server *Server) CreateOrder(w http.ResponseWriter, r *http.Request) {
@@ -166,7 +167,7 @@ func (server *Server) DeleteOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Is this user authenticated?
-	uid, err := auth.ExtractTokenID(r)
+	_, err = auth.ExtractTokenID(r)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
 		return
@@ -181,11 +182,11 @@ func (server *Server) DeleteOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Is the authenticated user, the owner of this post?
-	if uid != order.UserID {
-		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-		return
-	}
-	_, err = order.DeleteAOrder(server.DB, pid, uid)
+	// if uid != order.UserID {
+	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+	// 	return
+	// }
+	_, err = order.DeleteAOrder(server.DB, pid)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return

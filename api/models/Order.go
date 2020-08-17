@@ -66,9 +66,9 @@ func (p *Order) Validate() error {
 	if p.Price == "" {
 		return errors.New("Required Price")
 	}
-	if p.Image == "" {
-		return errors.New("Required Image")
-	}
+	// if p.Image == "" {
+	// 	return errors.New("Required Image")
+	// }
 	if p.UserID < 1 {
 		return errors.New("Required User")
 	}
@@ -140,9 +140,9 @@ func (p *Order) UpdateAOrder(db *gorm.DB) (*Order, error) {
 	return p, nil
 }
 
-func (p *Order) DeleteAOrder(db *gorm.DB, pid uint64, uid uint32) (int64, error) {
+func (p *Order) DeleteAOrder(db *gorm.DB, pid uint64) (int64, error) {
 
-	db = db.Debug().Model(&Order{}).Where("id = ? and user_id = ?", pid, uid).Take(&Order{}).Delete(&Order{})
+	db = db.Debug().Model(&Order{}).Where("id = ?", pid).Take(&Order{}).Delete(&Order{})
 
 	if db.Error != nil {
 		if gorm.IsRecordNotFoundError(db.Error) {
