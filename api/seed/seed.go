@@ -25,12 +25,18 @@ var users = []models.User{
 
 var posts = []models.Order{
 	models.Order{
-		Name:     "Title 1",
-		Category: "Hello world 1",
+		Name:     "Test1",
+		Category: "Test1",
+		Type:     "Test1",
+		Total:    "20",
+		Price:    "5000",
 	},
 	models.Order{
-		Name:     "Title 2",
-		Category: "Hello world 2",
+		Name:     "Test2",
+		Category: "Test2",
+		Type:     "Test2",
+		Total:    "30",
+		Price:    "600000",
 	},
 }
 
