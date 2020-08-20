@@ -35,15 +35,15 @@ func (server *Server) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	uid, err := auth.ExtractTokenID(r)
+	_, err = auth.ExtractTokenID(r)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
 		return
 	}
-	if uid != order.UserID {
-		responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
-		return
-	}
+	// if uid != order.UserID {
+	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
+	// 	return
+	// }
 	postCreated, err := order.SaveOrder(server.DB)
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
@@ -83,6 +83,22 @@ func (server *Server) GetOrder(w http.ResponseWriter, r *http.Request) {
 	}
 	responses.JSON(w, http.StatusOK, orderReceived)
 }
+func (server *Server) GetOrderByUserId(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	pid, err := strconv.ParseUint(vars["id"], 10, 64)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+	order := models.Order{}
+
+	orderReceived, err := order.FindOrdersByUserId(server.DB, pid)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	responses.JSON(w, http.StatusOK, orderReceived)
+}
 
 func (server *Server) UpdateOrder(w http.ResponseWriter, r *http.Request) {
 
@@ -111,10 +127,10 @@ func (server *Server) UpdateOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// If a user attempt to update a post not belonging to him
-	if uid != order.UserID {
-		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-		return
-	}
+	// if uid != order.UserID {
+	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+	// 	return
+	// }
 	// Read the data posted
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {

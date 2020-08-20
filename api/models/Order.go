@@ -122,6 +122,24 @@ func (p *Order) FindorderByID(db *gorm.DB, pid uint64) (*Order, error) {
 	}
 	return p, nil
 }
+func (p *Order) FindOrdersByUserId(db *gorm.DB, pid uint64) (*[]Order, error) {
+	var err error
+	orders := []Order{}
+	// err = db.Debug().Model(&Order{}).Limit(100).Where("user_id = ?", pid).Take(&orders).Error
+	err = db.Debug().Model(&Order{}).Where("user_id = ?", pid).Find(&orders).Error
+	if err != nil {
+		return &[]Order{}, err
+	}
+	if len(orders) > 0 {
+		for i, _ := range orders {
+			err := db.Debug().Model(&User{}).Where("id = ?", orders[i].UserID).Take(&orders[i].User).Error
+			if err != nil {
+				return &[]Order{}, err
+			}
+		}
+	}
+	return &orders, nil
+}
 
 func (p *Order) UpdateAOrder(db *gorm.DB) (*Order, error) {
 

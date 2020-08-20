@@ -9,6 +9,7 @@ func (s *Server) initializeRoutes() {
 
 	// Login Route
 	s.Router.HandleFunc("/login", middlewares.SetMiddlewareJSON(s.Login)).Methods("POST")
+	// s.Router.HandleFunc("/register", middlewares.SetMiddlewareJSON(s.CreateUser)).Methods("POST")
 
 	//Users routes
 	s.Router.HandleFunc("/users", middlewares.SetMiddlewareJSON(s.CreateUser)).Methods("POST")
@@ -22,6 +23,7 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/orders", middlewares.SetMiddlewareJSON(s.CreateOrder)).Methods("POST")
 	s.Router.HandleFunc("/orders", middlewares.SetMiddlewareJSON(s.GetOrders)).Methods("GET")
 	s.Router.HandleFunc("/orders/{id}", middlewares.SetMiddlewareJSON(s.GetOrder)).Methods("GET")
+	s.Router.HandleFunc("/orders/user/{id}", middlewares.SetMiddlewareJSON(s.GetOrderByUserId)).Methods("GET")
 	s.Router.HandleFunc("/orders/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateOrder))).Methods("PUT")
 	s.Router.HandleFunc("/orders/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteOrder)).Methods("DELETE")
 }
