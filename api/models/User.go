@@ -60,13 +60,12 @@ func (u *User) Validate(action string) error {
 		if u.Email == "" {
 			return errors.New("Required Email")
 		}
-		if err := checkmail.ValidateFormat(u.Email); err != nil {
-			return errors.New("Invalid Email")
-		}
 		if u.Role == "" {
 			return errors.New("Required Role")
 		}
-
+		if err := checkmail.ValidateFormat(u.Email); err != nil {
+			return errors.New("Invalid Email")
+		}
 		return nil
 	case "login":
 		if u.Password == "" {
@@ -152,10 +151,11 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 	}
 	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
-			"password":  u.Password,
-			"nickname":  u.Nickname,
-			"email":     u.Email,
-			"update_at": time.Now(),
+			"password":   u.Password,
+			"nickname":   u.Nickname,
+			"email":      u.Email,
+			"role":       u.Role,
+			"updated_at": time.Now(),
 		},
 	)
 	if db.Error != nil {
