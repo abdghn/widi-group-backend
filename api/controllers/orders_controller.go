@@ -17,7 +17,10 @@ import (
 )
 
 func (server *Server) CreateOrder(w http.ResponseWriter, r *http.Request) {
-
+	w.Header().Set("Context-Type", "application/form-data")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -55,7 +58,8 @@ func (server *Server) CreateOrder(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) GetOrders(w http.ResponseWriter, r *http.Request) {
-
+	w.Header().Set("Context-Type", "application/form-data")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	order := models.Order{}
 
 	orders, err := order.FindAllOrders(server.DB)
@@ -67,7 +71,8 @@ func (server *Server) GetOrders(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) GetOrder(w http.ResponseWriter, r *http.Request) {
-
+	w.Header().Set("Context-Type", "application/form-data")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	vars := mux.Vars(r)
 	pid, err := strconv.ParseUint(vars["id"], 10, 64)
 	if err != nil {
@@ -84,6 +89,8 @@ func (server *Server) GetOrder(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusOK, orderReceived)
 }
 func (server *Server) GetOrderByUserId(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/form-data")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	vars := mux.Vars(r)
 	pid, err := strconv.ParseUint(vars["id"], 10, 64)
 	if err != nil {
@@ -101,7 +108,10 @@ func (server *Server) GetOrderByUserId(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) UpdateOrder(w http.ResponseWriter, r *http.Request) {
-
+	w.Header().Set("Content-Type", "application/form-data")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	vars := mux.Vars(r)
 
 	// Check if the post id is valid
@@ -172,7 +182,10 @@ func (server *Server) UpdateOrder(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) DeleteOrder(w http.ResponseWriter, r *http.Request) {
-
+	w.Header().Set("Context-Type", "application/form-data")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "DELETE")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	vars := mux.Vars(r)
 
 	// Is a valid post id given to us?
