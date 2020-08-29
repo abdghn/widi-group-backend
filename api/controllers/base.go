@@ -55,7 +55,17 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 	server.DB.Debug().AutoMigrate(&models.User{}, &models.Order{}) //database migration
 
 	server.Router = mux.NewRouter()
+	// server.Router.Use(mux.CORSMethodMiddleware(server.Router))
+	server.Router.Methods("OPTIONS").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// fmt.Printf("OPTIONS")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Access-Control-Request-Headers, Access-Control-Request-Method, Connection, Host, Origin, User-Agent, Referer, Cache-Control, X-header")
+		w.WriteHeader(http.StatusNoContent)
+		return
+	})
 
+	server.Router.StrictSlash(true)
 	server.initializeRoutes()
 }
 
