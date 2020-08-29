@@ -1,1 +1,1 @@
-web: widi-group-backend
+web: product-order-be
