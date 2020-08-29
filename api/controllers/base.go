@@ -43,7 +43,7 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 	// 		fmt.Printf("We are connected to the %s database", Dbdriver)
 	// 	}
 	// }
-	DBURL := fmt.Sprintf("postgres://gtgmoyvbphgfiz:7017a8ec08bf52dc96a5ba951b1a8f9ae31e64f91f11fd96c2f90dda4847791c@ec2-54-156-121-142.compute-1.amazonaws.com:5432/d169utl5easvi")
+	DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", DbHost, DbPort, DbUser, DbName, DbPassword)
 	server.DB, err = gorm.Open("postgres", DBURL)
 	if err != nil {
 		fmt.Printf("Cannot connect to %s database", Dbdriver)

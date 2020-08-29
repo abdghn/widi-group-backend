@@ -29,6 +29,7 @@ type Order struct {
 	Type      string    `gorm:"size:255;" json:"type"`
 	Total     string    `gorm:"size:255;" json:"total"`
 	Price     string    `gorm:"size:255;" json:"price"`
+	Status    string    `gorm:"size:255;" json:"status"`
 	Image     string    `gorm:"size:255;" json:"image"`
 	User      User      `json:"user"`
 	UserID    uint32    `json:"user_id"`
@@ -43,6 +44,7 @@ func (p *Order) Prepare() {
 	p.Type = html.EscapeString(strings.TrimSpace(p.Type))
 	p.Total = html.EscapeString(strings.TrimSpace(p.Total))
 	p.Price = html.EscapeString(strings.TrimSpace(p.Price))
+	p.Status = html.EscapeString(strings.TrimSpace(p.Status))
 	p.Image = html.EscapeString(strings.TrimSpace(p.Image))
 	p.User = User{}
 	p.CreatedAt = time.Now()
@@ -145,7 +147,7 @@ func (p *Order) UpdateAOrder(db *gorm.DB) (*Order, error) {
 
 	var err error
 
-	err = db.Debug().Model(&Order{}).Where("id = ?", p.ID).Updates(Order{Name: p.Name, Category: p.Category, Type: p.Type, Total: p.Total, Price: p.Price, Image: p.Image, UpdatedAt: time.Now()}).Error
+	err = db.Debug().Model(&Order{}).Where("id = ?", p.ID).Updates(Order{Name: p.Name, Category: p.Category, Type: p.Type, Total: p.Total, Status: p.Status, Price: p.Price, Image: p.Image, UpdatedAt: time.Now()}).Error
 	if err != nil {
 		return &Order{}, err
 	}
@@ -164,7 +166,7 @@ func (p *Order) DeleteAOrder(db *gorm.DB, pid uint64) (int64, error) {
 
 	if db.Error != nil {
 		if gorm.IsRecordNotFoundError(db.Error) {
-			return 0, errors.New("Post not found")
+			return 0, errors.New("Order not found")
 		}
 		return 0, db.Error
 	}
