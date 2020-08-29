@@ -27,6 +27,12 @@ func Run() {
 	// auto migration
 	seed.Load(server.DB)
 
-	server.Run(os.Getenv("PORT"))
+	// server.Run(os.Getenv("PORT"))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	server.Run(":" + port)
 
 }
