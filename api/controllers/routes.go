@@ -1,11 +1,17 @@
 package controllers
 
-import "product-order-be/api/middlewares"
+import (
+	"net/http"
+	"product-order-be/api/middlewares"
+)
 
 func (s *Server) initializeRoutes() {
 
 	// Home Route
 	s.Router.HandleFunc("/", middlewares.SetMiddlewareJSON(s.Home)).Methods("GET")
+
+	// Static Files Upload
+	s.Router.PathPrefix("/files/").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir("./files"))))
 
 	// Login Route
 	s.Router.HandleFunc("/login", middlewares.SetMiddlewareJSON(s.Login)).Methods("POST")
@@ -21,6 +27,7 @@ func (s *Server) initializeRoutes() {
 
 	//Posts routes
 	s.Router.HandleFunc("/orders", middlewares.SetMiddlewareJSON(s.CreateOrder)).Methods("POST")
+	s.Router.HandleFunc("/upload/orders", middlewares.SetMiddlewareJSON(s.UploadOrder)).Methods("POST")
 	s.Router.HandleFunc("/orders", middlewares.SetMiddlewareJSON(s.GetOrders)).Methods("GET")
 	s.Router.HandleFunc("/orders/{id}", middlewares.SetMiddlewareJSON(s.GetOrder)).Methods("GET")
 	s.Router.HandleFunc("/orders/user/{id}", middlewares.SetMiddlewareJSON(s.GetOrderByUserId)).Methods("GET")
