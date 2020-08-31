@@ -4,8 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
 
 	"product-order-be/api/auth"
@@ -17,7 +20,7 @@ import (
 )
 
 func (server *Server) CreateOrder(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Context-Type", "application/form-data")
+	// w.Header().Set("Context-Type", "application/form-data")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
@@ -55,6 +58,54 @@ func (server *Server) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Lacation", fmt.Sprintf("%s%s/%d", r.Host, r.URL.Path, postCreated.ID))
 	responses.JSON(w, http.StatusCreated, postCreated)
+}
+
+func (server *Server) UploadOrder(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	if err := r.ParseMultipartForm(1024); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	alias := r.FormValue("alias")
+
+	uploadedFile, handler, err := r.FormFile("file")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer uploadedFile.Close()
+
+	// dir, err := os.Getwd()
+	// if err != nil {
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// 	return
+	// }
+
+	filename := handler.Filename
+	if alias != "" {
+		filename = fmt.Sprintf("%s%s", alias, filepath.Ext(handler.Filename))
+	}
+	fileLocation := filepath.Join("files", filename)
+	targetFile, err := os.OpenFile(fileLocation, os.O_WRONLY|os.O_CREATE, 0666)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer targetFile.Close()
+
+	if _, err := io.Copy(targetFile, uploadedFile); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// uploadPath := "files/" + filename
+	// res, err := json.Marshal(files)
+	// if err != nil {
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// 	return
+	// }
+	responses.JSON(w, http.StatusCreated, fileLocation)
 }
 
 func (server *Server) GetOrders(w http.ResponseWriter, r *http.Request) {
@@ -122,7 +173,7 @@ func (server *Server) UpdateOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//CHeck if the auth token is valid and  get the user id from it
-	uid, err := auth.ExtractTokenID(r)
+	_, err = auth.ExtractTokenID(r)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
 		return
@@ -157,10 +208,10 @@ func (server *Server) UpdateOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Also check if the request user id is equal to the one gotten from token
-	if uid != orderUpdate.UserID {
-		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-		return
-	}
+	// if uid != orderUpdate.UserID {
+	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+	// 	return
+	// }
 
 	orderUpdate.Prepare()
 	err = orderUpdate.Validate()
@@ -182,10 +233,8 @@ func (server *Server) UpdateOrder(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) DeleteOrder(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Context-Type", "application/form-data")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "DELETE")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	vars := mux.Vars(r)
 
 	// Is a valid post id given to us?
