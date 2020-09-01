@@ -54,14 +54,25 @@ func (u *User) Validate(action string) error {
 		if u.Nickname == "" {
 			return errors.New("Required Nickname")
 		}
+		// if u.Password == "" {
+		// 	return errors.New("Required Password")
+		// }
+		if u.Email == "" {
+			return errors.New("Required Email")
+		}
+		if err := checkmail.ValidateFormat(u.Email); err != nil {
+			return errors.New("Invalid Email")
+		}
+		return nil
+	case "updatePass":
+		if u.Nickname == "" {
+			return errors.New("Required Nickname")
+		}
 		if u.Password == "" {
 			return errors.New("Required Password")
 		}
 		if u.Email == "" {
 			return errors.New("Required Email")
-		}
-		if u.Role == "" {
-			return errors.New("Required Role")
 		}
 		if err := checkmail.ValidateFormat(u.Email); err != nil {
 			return errors.New("Invalid Email")
@@ -149,24 +160,50 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
-		map[string]interface{}{
-			"password":   u.Password,
-			"nickname":   u.Nickname,
-			"email":      u.Email,
-			"role":       u.Role,
-			"updated_at": time.Now(),
-		},
-	)
-	if db.Error != nil {
-		return &User{}, db.Error
+	if u.Password == "" {
+		db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
+			// map[string]interface{}{
+			// 	"password":   u.Password,
+			// 	"nickname":   u.Nickname,
+			// 	"email":      u.Email,
+			// 	"role":       u.Role,
+			// 	"updated_at": time.Now(),
+			// },
+			map[string]interface{}{
+				"nickname":   u.Nickname,
+				"email":      u.Email,
+				"updated_at": time.Now(),
+			},
+		)
+		if db.Error != nil {
+			return &User{}, db.Error
+		}
+		// This is the display the updated user
+		err = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&u).Error
+		if err != nil {
+			return &User{}, err
+		}
+		return u, nil
+	} else {
+		db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
+			map[string]interface{}{
+				"password":   u.Password,
+				"nickname":   u.Nickname,
+				"email":      u.Email,
+				"role":       u.Role,
+				"updated_at": time.Now(),
+			},
+		)
+		if db.Error != nil {
+			return &User{}, db.Error
+		}
+		// This is the display the updated user
+		err = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&u).Error
+		if err != nil {
+			return &User{}, err
+		}
+		return u, nil
 	}
-	// This is the display the updated user
-	err = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&u).Error
-	if err != nil {
-		return &User{}, err
-	}
-	return u, nil
 }
 
 func (u *User) DeleteAUser(db *gorm.DB, uid uint32) (int64, error) {

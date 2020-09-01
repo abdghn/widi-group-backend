@@ -136,18 +136,33 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	// 	return
 	// }
 	user.Prepare()
-	err = user.Validate("update")
-	if err != nil {
-		responses.ERROR(w, http.StatusUnprocessableEntity, err)
-		return
+	if user.Password == "" {
+		err = user.Validate("update")
+		if err != nil {
+			responses.ERROR(w, http.StatusUnprocessableEntity, err)
+			return
+		}
+		updatedUser, err := user.UpdateAUser(server.DB, uint32(uid))
+		if err != nil {
+			formattedError := formaterror.FormatError(err.Error())
+			responses.ERROR(w, http.StatusInternalServerError, formattedError)
+			return
+		}
+		responses.JSON(w, http.StatusOK, updatedUser)
+	} else {
+		err = user.Validate("updatePass")
+		if err != nil {
+			responses.ERROR(w, http.StatusUnprocessableEntity, err)
+			return
+		}
+		updatedUser, err := user.UpdateAUser(server.DB, uint32(uid))
+		if err != nil {
+			formattedError := formaterror.FormatError(err.Error())
+			responses.ERROR(w, http.StatusInternalServerError, formattedError)
+			return
+		}
+		responses.JSON(w, http.StatusOK, updatedUser)
 	}
-	updatedUser, err := user.UpdateAUser(server.DB, uint32(uid))
-	if err != nil {
-		formattedError := formaterror.FormatError(err.Error())
-		responses.ERROR(w, http.StatusInternalServerError, formattedError)
-		return
-	}
-	responses.JSON(w, http.StatusOK, updatedUser)
 }
 
 func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
