@@ -33,4 +33,12 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/orders/user/{id}", middlewares.SetMiddlewareJSON(s.GetOrderByUserId)).Methods("GET")
 	s.Router.HandleFunc("/orders/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateOrder))).Methods("PUT")
 	s.Router.HandleFunc("/orders/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteOrder)).Methods("DELETE")
+
+	//Puskesmas routes
+	s.Router.HandleFunc("/puskesmas", middlewares.SetMiddlewareJSON(s.CreatePuskesmas)).Methods("POST")
+	s.Router.HandleFunc("/puskesmas", middlewares.SetMiddlewareJSON(s.GetAllPuskesmas)).Methods("GET")
+	s.Router.HandleFunc("/puskesmas/{id}", middlewares.SetMiddlewareJSON(s.GetPuskesmas)).Methods("GET")
+	s.Router.HandleFunc("/puskesmas/user/{id}", middlewares.SetMiddlewareJSON(s.GetPuskesmasByUserId)).Methods("GET")
+	s.Router.HandleFunc("/puskesmas/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdatePuskesmas))).Methods("PUT")
+	s.Router.HandleFunc("/puskesmas/{id}", middlewares.SetMiddlewareAuthentication(s.DeletePuskesmas)).Methods("DELETE")
 }
