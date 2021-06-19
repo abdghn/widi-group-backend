@@ -19,7 +19,6 @@ func Run() {
 	err = godotenv.Load()
 	if err != nil {
 		ioutil.WriteFile(".env", []byte(""), 0755)
-		// log.Fatalf("Error getting env, not comming through %v", err)
 	} else {
 		fmt.Println("We are getting the env values")
 	}
