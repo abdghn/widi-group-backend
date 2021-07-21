@@ -4,9 +4,10 @@ import (
 	"log"
 	"testing"
 
+	"github.com/abdghn/widi-group-backend/api/models"
+
 	_ "github.com/jinzhu/gorm/dialects/mysql"    //mysql driver
 	_ "github.com/jinzhu/gorm/dialects/postgres" //postgres driver
-	"github.com/victorsteven/fullstack/api/models"
 	"gopkg.in/go-playground/assert.v1"
 )
 

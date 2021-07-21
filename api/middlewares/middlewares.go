@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"product-order-be/api/auth"
-	"product-order-be/api/responses"
+	"github.com/abdghn/widi-group-backend/api/auth"
+	"github.com/abdghn/widi-group-backend/api/responses"
 )
 
 func SetMiddlewareJSON(next http.HandlerFunc) http.HandlerFunc {

@@ -8,10 +8,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"product-order-be/api/auth"
-	"product-order-be/api/models"
-	"product-order-be/api/responses"
-	"product-order-be/api/utils/formaterror"
+	"github.com/abdghn/widi-group-backend/api/auth"
+	"github.com/abdghn/widi-group-backend/api/models"
+	"github.com/abdghn/widi-group-backend/api/responses"
+	"github.com/abdghn/widi-group-backend/api/utils/formaterror"
 
 	"github.com/gorilla/mux"
 )

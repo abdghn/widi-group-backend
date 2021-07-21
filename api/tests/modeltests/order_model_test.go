@@ -4,8 +4,9 @@ import (
 	"log"
 	"testing"
 
+	"github.com/abdghn/widi-group-backend/api/models"
+
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"product-order-be/api/models"
 	"gopkg.in/go-playground/assert.v1"
 )
 

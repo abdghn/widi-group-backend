@@ -11,7 +11,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"    //mysql database driver
 	_ "github.com/jinzhu/gorm/dialects/postgres" //postgres database driver
 
-	"product-order-be/api/models"
+	"github.com/abdghn/widi-group-backend/api/models"
 )
 
 type Server struct {

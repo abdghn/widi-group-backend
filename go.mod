@@ -1,4 +1,4 @@
-module product-order-be
+module github.com/abdghn/widi-group-backend
 
 go 1.13
 

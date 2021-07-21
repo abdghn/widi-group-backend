@@ -10,8 +10,9 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/abdghn/widi-group-backend/api/models"
+
 	"github.com/gorilla/mux"
-	"product-order-be/api/models"
 	"gopkg.in/go-playground/assert.v1"
 )
 

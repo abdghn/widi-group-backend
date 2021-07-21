@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 
-	"product-order-be/api/responses"
+	"github.com/abdghn/widi-group-backend/api/responses"
 )
 
 func (server *Server) Home(w http.ResponseWriter, r *http.Request) {

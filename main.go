@@ -1,6 +1,6 @@
 package main
 
-import "product-order-be/api"
+import "github.com/abdghn/widi-group-backend/api"
 
 func main() {
 	api.Run()

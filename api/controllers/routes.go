@@ -2,7 +2,8 @@ package controllers
 
 import (
 	"net/http"
-	"product-order-be/api/middlewares"
+
+	"github.com/abdghn/widi-group-backend/api/middlewares"
 )
 
 func (s *Server) initializeRoutes() {

@@ -3,7 +3,7 @@ package seed
 import (
 	"log"
 
-	"product-order-be/api/models"
+	"github.com/abdghn/widi-group-backend/api/models"
 
 	"github.com/jinzhu/gorm"
 )

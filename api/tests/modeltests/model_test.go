@@ -6,10 +6,11 @@ import (
 	"os"
 	"testing"
 
+	"github.com/abdghn/widi-group-backend/api/controllers"
+	"github.com/abdghn/widi-group-backend/api/models"
+
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
-	"product-order-be/api/controllers"
-	"product-order-be/api/models"
 )
 
 var server = controllers.Server{}

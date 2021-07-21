@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"product-order-be/api/controllers"
+	"github.com/abdghn/widi-group-backend/api/controllers"
 
 	"github.com/joho/godotenv"
 )
